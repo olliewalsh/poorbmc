@@ -35,7 +35,7 @@ IPMI_COMMAND_NODE_BUSY = 0xC0
 IPMI_INVALID_DATA = 0xcc
 
 BOOT_DEVICES = [
-    'none',
+    'default',
     'network',
     'hd',
     'optical'
@@ -59,7 +59,7 @@ class PoorBMC(bmc.Bmc):
             'port': snmp_port,
             'version': 1
         })
-        self.current_boot_device = 'none'
+        self.current_boot_device = 'default'
 
     def get_boot_device(self):
         LOG.debug('Get boot device called for %s', self.bmc_name)
