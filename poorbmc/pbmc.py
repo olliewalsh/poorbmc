@@ -80,7 +80,7 @@ class PoorBMC(bmc.Bmc):
             state = self.snmp.power_state()
             if state == states.POWER_ON:
                 return POWERON
-            elif state == states.POWEROFF:
+            elif state == states.POWER_OFF:
                 return POWEROFF
             else:
                 return IPMI_COMMAND_NODE_BUSY

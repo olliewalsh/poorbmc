@@ -39,7 +39,7 @@ def _(arg):
     return arg
 
 
-reboot_delay = 0
+reboot_delay = 10
 power_timeout = 10
 udp_transport_timeout = 1.0
 udp_transport_retries = 5
