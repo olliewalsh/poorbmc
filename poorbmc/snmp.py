@@ -40,7 +40,7 @@ def _(arg):
 
 
 reboot_delay = 10
-power_timeout = 10
+power_timeout = 60
 udp_transport_timeout = 1.0
 udp_transport_retries = 5
 
@@ -263,7 +263,7 @@ class SNMPDriverBase(object):
     """
 
     oid_enterprise = (1, 3, 6, 1, 4, 1)
-    retry_interval = 1
+    retry_interval = 5
 
     def __init__(self, snmp_info):
         self.snmp_info = snmp_info
