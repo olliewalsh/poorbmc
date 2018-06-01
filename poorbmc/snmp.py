@@ -39,8 +39,7 @@ def _(arg):
     return arg
 
 
-reboot_delay = 10
-power_timeout = 60
+power_timeout = 10
 udp_transport_timeout = 1.0
 udp_transport_retries = 5
 
@@ -263,7 +262,7 @@ class SNMPDriverBase(object):
     """
 
     oid_enterprise = (1, 3, 6, 1, 4, 1)
-    retry_interval = 5
+    retry_interval = 1
 
     def __init__(self, snmp_info):
         self.snmp_info = snmp_info
@@ -355,14 +354,8 @@ class SNMPDriverBase(object):
         :raises: SNMPFailure if an SNMP request fails.
         :returns: power state. One of :class:`ironic.common.states`.
         """
-        power_result = self.power_off()
-        if power_result != states.POWER_OFF:
-            return states.ERROR
-        time.sleep(reboot_delay)
-        power_result = self.power_on()
-        if power_result != states.POWER_ON:
-            return states.ERROR
-        return power_result
+        self._snmp_power_reset()
+        return states.POWER_ON
 
 
 class SNMPDriverSimple(SNMPDriverBase):
@@ -391,6 +384,10 @@ class SNMPDriverSimple(SNMPDriverBase):
     @abc.abstractproperty
     def value_power_off(self):
         """Value representing power off state."""
+
+    @abc.abstractproperty
+    def value_power_reset(self):
+        """Value representing power cycle state."""
 
     def _snmp_oid(self):
         """Return the OID of the power state object.
@@ -426,6 +423,10 @@ class SNMPDriverSimple(SNMPDriverBase):
         value = rfc1902.Integer(self.value_power_off)
         self.client.set(self.oid, value)
 
+    def _snmp_power_reset(self):
+        value = rfc1902.Integer(self.value_power_reset)
+        self.client.set(self.oid, value)
+
 
 class SNMPDriverAPCMasterSwitch(SNMPDriverSimple):
     """SNMP driver class for APC MasterSwitch PDU devices.
@@ -438,3 +439,4 @@ class SNMPDriverAPCMasterSwitch(SNMPDriverSimple):
     oid_device = (318, 1, 1, 4, 4, 2, 1, 3)
     value_power_on = 1
     value_power_off = 2
+    value_power_reset = 3
